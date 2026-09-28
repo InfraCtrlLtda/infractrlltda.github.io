@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<!-- Caso real Modernização. Sem depoimento do cliente ainda: bloco de citação removido até haver um real. -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Modernização: nuvem gerenciada e DR | InfraCtrl</title>
+<meta name="description" content="Como a InfraCtrl tirou a Modernização de servidores locais instáveis para a IBM Cloud com DR, reduziu custo migrando para Linux e mantém ~99% de uptime.">
+<link rel="canonical" href="https://infractrl.com.br/case-modernizacao.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Estudo de caso: Modernização — de servidores locais que caíam à nuvem gerenciada">
+<meta property="og:description" content="Migração para IBM Cloud com DR, SQL Server em Linux/OpenShift com custo menor e operação monitorada a 99% de uptime.">
+<meta property="og:url" content="https://infractrl.com.br/case-modernizacao.html">
+<meta property="og:image" content="https://infractrl.com.br/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Estudo de caso: Modernização — de servidores locais que caíam à nuvem gerenciada","author":{"@type":"Organization","name":"InfraCtrl"},"publisher":{"@type":"Organization","name":"InfraCtrl","logo":{"@type":"ImageObject","url":"https://infractrl.com.br/og-image.png"}},"datePublished":"2026-08-18","mainEntityOfPage":"https://infractrl.com.br/case-modernizacao.html","about":"Migração de infraestrutura, cloud, banco de dados e monitoramento"}
+</script>
+<style>
+  .head{padding:22px 0 44px;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+  .head::before{content:"";position:absolute;inset:0;background:radial-gradient(620px 260px at 12% -30%,var(--green-glow),transparent 70%);pointer-events:none}
+  .head h1{max-width:860px;margin-top:18px}
+  .facts{display:flex;flex-wrap:wrap;gap:12px 34px;margin-top:26px;font-size:14px;position:relative}
+  .facts div span{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:2px}
+  .layout{display:grid;grid-template-columns:1fr 300px;gap:48px;padding:48px 0}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+  article h2{margin:38px 0 6px;font-size:26px}
+  article h2:first-child{margin-top:0}
+  article .lbl{font-family:var(--mono);font-size:12px;color:var(--green);letter-spacing:1px;text-transform:uppercase}
+  .beforeafter{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+  @media(max-width:620px){.beforeafter{grid-template-columns:1fr}}
+  .ba{border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+  .ba.b{border-left:3px solid var(--red)}.ba.a{border-left:3px solid var(--green)}
+  .ba h4{font-size:13px;text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);margin-bottom:10px}
+  .ba.b h4{color:#cf4437}.ba.a h4{color:var(--green-soft)}
+  .ba ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--text-muted)}.ba li{margin:7px 0}
+  .resultgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin:24px 0}
+  @media(max-width:620px){.resultgrid{grid-template-columns:1fr}}
+  .resultgrid .cell{background:var(--bg-card);padding:26px 22px}
+  .resultgrid .n{font-family:var(--mono);font-size:32px;font-weight:800;color:var(--green);letter-spacing:-1px;line-height:1.1}
+  .resultgrid .l{font-size:14px;color:var(--text-muted);margin-top:4px}
+  .resultgrid .was{font-size:12px;color:var(--text-dim);margin-top:8px;font-family:var(--mono)}
+  .tl{position:relative;padding:0 0 24px 26px;border-left:2px solid var(--border);margin-left:6px}
+  .tl::before{content:"";position:absolute;left:-8px;top:3px;width:13px;height:13px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px var(--bg)}
+  .tl:last-child{border-left-color:transparent}
+  .tl .when{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--green)}
+  .tl h4{margin:2px 0 5px;font-size:17px}.tl p{margin:0;font-size:14.5px;color:var(--text-muted)}
+  aside{position:sticky;top:92px;align-self:start}
+  .box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-bottom:18px}
+  .box h5{font-family:var(--mono);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px}
+  .box ul{list-style:none;padding:0;margin:0}
+  .box li{padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;display:flex;align-items:center;gap:9px}
+  .box li:last-child{border-bottom:none}.box li::before{content:"▸";color:var(--green)}
+  .box.cta{background:var(--panel);border-color:var(--green-dim)}
+  .box.cta p{font-size:14.5px;color:var(--text-muted);margin:0 0 16px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="in">
+    <a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a>
+    <nav id="nav">
+      <a href="index.html#servicos">Serviços</a>
+      <a href="index.html#planos">Planos</a>
+      <a href="cases.html" class="active">Cases</a>
+      <a href="artigos.html">Artigos</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="seguranca.html">Segurança</a>
+    </nav>
+    <div style="display:flex;gap:12px;align-items:center">
+      <a href="index.html#diagnostico" class="btn">Falar com um especialista</a>
+      <button class="navtoggle" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="breadcrumb"><a href="index.html">Início</a> / <a href="cases.html">Cases</a> / Modernização</div></div>
+
+<div class="head">
+  <div class="wrap">
+    <span class="tag">Migração · Cloud · Banco de dados · Monitoramento</span>
+    <h1>De servidores locais que caíam a uma operação em nuvem, com DR e custo menor</h1>
+    <p class="lead" style="margin-top:16px;max-width:760px">A jornada da Modernização com a InfraCtrl: sair dos servidores locais da prefeitura, ganhar disponibilidade na IBM Cloud, migrar o banco para Linux reduzindo custo e chegar a uma operação monitorada e acompanhada por um time todos os dias.</p>
+    <div class="facts">
+      <div><span>Cliente</span>Modernização Informática</div>
+      <div><span>Setor</span>Software para gestão pública</div>
+      <div><span>Serviços</span>Migração, Cloud, DBA, DR, Monitoramento</div>
+      <div><span>Duração</span>Jornada em fases · operação contínua</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="layout">
+    <article>
+      <h2><span class="lbl">O desafio</span><br>Sistemas críticos de uma prefeitura rodando em servidores que caíam</h2>
+      <p class="muted" style="color:var(--text)">A Modernização entrega software de gestão para o setor público: sistemas que uma prefeitura usa no dia a dia para atender o cidadão. O problema era onde eles rodavam: <strong>servidores locais dentro da prefeitura, que caíam com frequência</strong>. Sem redundância, sem plano de recuperação e sem monitoramento, cada queda derrubava serviços públicos e não havia como saber o que tinha acontecido nem quando voltaria.</p>
+
+      <div class="beforeafter">
+        <div class="ba b"><h4>Ponto de partida</h4><ul><li>Servidores locais na prefeitura, com quedas frequentes</li><li>Sem redundância e sem Disaster Recovery</li><li>Sem monitoramento: quedas descobertas na reclamação</li><li>Banco e aplicações amarrados a licenciamento Windows</li></ul></div>
+        <div class="ba a"><h4>Onde chegamos</h4><ul><li>Operação na IBM Cloud com DR configurado</li><li>SQL Server migrado para Linux (OpenShift), custo menor</li><li>Observabilidade com Uptime Kuma + Zabbix</li><li>~99% de uptime e time atuando todos os dias</li></ul></div>
+      </div>
+
+      <h2><span class="lbl">A jornada</span><br>Uma transformação em fases, não um "big bang"</h2>
+      <p class="muted" style="color:var(--text)">Migrar uma operação pública inteira de uma vez seria arriscado. Fizemos por etapas, cada uma entregando um ganho concreto antes da próxima.</p>
+
+      <div style="margin:26px 0">
+        <div class="tl">
+          <div class="when">01 · Saída dos servidores locais</div>
+          <h4>Para a IBM Cloud, com Hyper-V, SQL Server e DR</h4>
+          <p>Tiramos os sistemas dos servidores locais da prefeitura e levamos para a IBM Cloud, virtualizando com Hyper-V e rodando o SQL Server em Windows, já com Disaster Recovery configurado. Só sair do on-premises instável para uma nuvem com redundância <strong>acabou com as quedas diárias e deu o primeiro salto de disponibilidade</strong>.</p>
+        </div>
+        <div class="tl">
+          <div class="when">02 · Maturidade e observabilidade</div>
+          <h4>Time técnico dedicado + Uptime Kuma e Zabbix</h4>
+          <p>Com a operação estável na nuvem, colocamos um time técnico atuando todos os dias e a observabilidade de verdade: <strong>Uptime Kuma e Zabbix</strong> monitorando disponibilidade e saúde do ambiente. A partir dos dados, passamos a aperfeiçoar continuamente o SQL Server, os servidores e os Tomcats.</p>
+        </div>
+        <div class="tl">
+          <div class="when">03 · Redução de custo</div>
+          <h4>SQL Server e aplicação para Linux, com OpenShift</h4>
+          <p>Com a base madura, migramos o SQL Server de Windows para <strong>Linux</strong> e levamos a operação para <strong>OpenShift</strong>. Saindo do licenciamento Windows, <strong>reduzimos o custo da operação</strong> sem abrir mão de estabilidade.</p>
+        </div>
+        <div class="tl">
+          <div class="when">04 · Modernização de aplicação (em andamento)</div>
+          <h4>De Tomcat em Windows para Linux + Docker</h4>
+          <p>Hoje estamos ajudando a migrar as aplicações de <strong>Tomcat em Windows para Linux com Docker</strong> (containers), simplificando a operação, facilitando novas versões e reduzindo custo mais uma vez.</p>
+        </div>
+      </div>
+
+      <h2><span class="lbl">O resultado</span><br>Uma operação pública estável, monitorada e mais barata</h2>
+      <div class="resultgrid">
+        <div class="cell"><div class="n">~99%</div><div class="l">de uptime hoje</div><div class="was">antes: quedas frequentes nos servidores locais</div></div>
+        <div class="cell"><div class="n">DR ativo</div><div class="l">recuperação de desastre configurada</div><div class="was">antes: sem redundância</div></div>
+        <div class="cell"><div class="n">Windows → Linux</div><div class="l">SQL Server e apps em Linux/OpenShift</div><div class="was">custo de licenciamento reduzido</div></div>
+        <div class="cell"><div class="n">Time diário</div><div class="l">suporte e melhorias todos os dias</div><div class="was">antes: ninguém acompanhando</div></div>
+      </div>
+
+      <h2><span class="lbl">O impacto</span><br>Serviço público sem interrupção, para quem depende dele</h2>
+      <p class="muted" style="color:var(--text)">A Modernização entrega sistemas que uma prefeitura usa para atender o cidadão todos os dias. Sair dos servidores locais instáveis para uma operação em nuvem com DR e time diário significa que esses serviços continuam no ar mesmo quando algo dá errado — e que a equipe da Modernização não precisa mais tratar infraestrutura como um problema recorrente. A migração para Linux/OpenShift também reduziu o custo de licenciamento, liberando orçamento para investir no produto em vez de manter a operação em pé.</p>
+
+    </article>
+
+    <aside>
+      <div class="box"><h5>Serviços aplicados</h5><ul><li>Migração para cloud (IBM Cloud)</li><li>Disaster Recovery (DR)</li><li>Gestão de servidores</li><li>DBA / SQL Server (Windows→Linux)</li><li>Monitoramento e observabilidade</li><li>Containers (OpenShift / Docker)</li></ul></div>
+      <div class="box"><h5>Stack</h5><ul><li>IBM Cloud · Hyper-V</li><li>SQL Server (Windows → Linux)</li><li>OpenShift · Docker · Linux</li><li>Tomcat</li><li>Uptime Kuma · Zabbix</li></ul></div>
+      <div class="box cta"><h5 style="color:var(--green-soft)">Ainda preso a servidores que caem?</h5><p>Peça uma avaliação gratuita. Mostramos o caminho de migração e estabilização da sua operação, sem compromisso.</p><a href="index.html#diagnostico" class="btn block">Avaliar minha infraestrutura</a></div>
+    </aside>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div><a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a><p class="about">Infraestrutura gerenciada para empresas de tecnologia. Monitoramento, cloud, segurança e bancos de dados — 100% remoto, todo o Brasil.</p></div>
+      <div><h5>Empresa</h5><ul><li><a href="sobre.html">Sobre</a></li><li><a href="cases.html">Cases de sucesso</a></li><li><a href="artigos.html">Artigos</a></li><li><a href="seguranca.html">Segurança &amp; Compliance</a></li></ul></div>
+      <div><h5>Serviços</h5><ul><li><a href="index.html#servicos">Infraestrutura Gerenciada</a></li><li><a href="index.html#servicos">Monitoramento 24/7</a></li><li><a href="index.html#servicos">Bancos de Dados</a></li><li><a href="index.html#servicos">Segurança</a></li><li><a href="index.html#planos">Planos</a></li></ul></div>
+      <div><h5>Contato</h5><ul><li><a href="index.html#diagnostico">Falar com um especialista</a></li><li><a href="https://whatsdba.infractrl.com.br">WhatsDBA ↗</a></li></ul></div>
+    </div>
+    <div class="bottom"><span>© 2026 InfraCtrl · Infraestrutura gerenciada para empresas de tecnologia</span><span><a href="cases.html" style="color:var(--text-muted)">← Todos os cases</a></span></div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<!-- Caso real CNPI. Sem depoimento do cliente ainda: bloco de citação removido até haver um real. Números de custo (R$19.400 -> R$17.000) informados pelo cliente/operação. -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case CNPI: Oracle Cloud, FinOps e 99,9% de uptime | InfraCtrl</title>
+<meta name="description" content="Como a InfraCtrl migrou o CNPI para a Oracle Cloud, reduziu a conta em ~R$2.400/mês com FinOps, refez a segurança do zero e chegou a 99,9% de uptime.">
+<link rel="canonical" href="https://infractrl.com.br/case-cnpi.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Estudo de caso: CNPI — do servidor local à Oracle Cloud, com conta menor e 99,9% de uptime">
+<meta property="og:description" content="Migração para a nuvem e depois para a Oracle Cloud, FinOps reduzindo a conta, segurança refeita do zero e ~99,9% de uptime.">
+<meta property="og:url" content="https://infractrl.com.br/case-cnpi.html">
+<meta property="og:image" content="https://infractrl.com.br/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Estudo de caso: CNPI — do servidor local à Oracle Cloud, com conta menor e 99,9% de uptime","author":{"@type":"Organization","name":"InfraCtrl"},"publisher":{"@type":"Organization","name":"InfraCtrl","logo":{"@type":"ImageObject","url":"https://infractrl.com.br/og-image.png"}},"datePublished":"2026-08-18","mainEntityOfPage":"https://infractrl.com.br/case-cnpi.html","about":"Migração de cloud, FinOps, segurança e monitoramento"}
+</script>
+<style>
+  .head{padding:22px 0 44px;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+  .head::before{content:"";position:absolute;inset:0;background:radial-gradient(620px 260px at 12% -30%,var(--green-glow),transparent 70%);pointer-events:none}
+  .head h1{max-width:860px;margin-top:18px}
+  .facts{display:flex;flex-wrap:wrap;gap:12px 34px;margin-top:26px;font-size:14px;position:relative}
+  .facts div span{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:2px}
+  .layout{display:grid;grid-template-columns:1fr 300px;gap:48px;padding:48px 0}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+  article h2{margin:38px 0 6px;font-size:26px}
+  article h2:first-child{margin-top:0}
+  article .lbl{font-family:var(--mono);font-size:12px;color:var(--green);letter-spacing:1px;text-transform:uppercase}
+  .beforeafter{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+  @media(max-width:620px){.beforeafter{grid-template-columns:1fr}}
+  .ba{border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+  .ba.b{border-left:3px solid var(--red)}.ba.a{border-left:3px solid var(--green)}
+  .ba h4{font-size:13px;text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);margin-bottom:10px}
+  .ba.b h4{color:#cf4437}.ba.a h4{color:var(--green-soft)}
+  .ba ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--text-muted)}.ba li{margin:7px 0}
+  .resultgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin:24px 0}
+  @media(max-width:620px){.resultgrid{grid-template-columns:1fr}}
+  .resultgrid .cell{background:var(--bg-card);padding:26px 22px}
+  .resultgrid .n{font-family:var(--mono);font-size:32px;font-weight:800;color:var(--green);letter-spacing:-1px;line-height:1.1}
+  .resultgrid .l{font-size:14px;color:var(--text-muted);margin-top:4px}
+  .resultgrid .was{font-size:12px;color:var(--text-dim);margin-top:8px;font-family:var(--mono)}
+  .tl{position:relative;padding:0 0 24px 26px;border-left:2px solid var(--border);margin-left:6px}
+  .tl::before{content:"";position:absolute;left:-8px;top:3px;width:13px;height:13px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px var(--bg)}
+  .tl:last-child{border-left-color:transparent}
+  .tl .when{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--green)}
+  .tl h4{margin:2px 0 5px;font-size:17px}.tl p{margin:0;font-size:14.5px;color:var(--text-muted)}
+  aside{position:sticky;top:92px;align-self:start}
+  .box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-bottom:18px}
+  .box h5{font-family:var(--mono);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px}
+  .box ul{list-style:none;padding:0;margin:0}
+  .box li{padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;display:flex;align-items:center;gap:9px}
+  .box li:last-child{border-bottom:none}.box li::before{content:"▸";color:var(--green)}
+  .box.cta{background:var(--panel);border-color:var(--green-dim)}
+  .box.cta p{font-size:14.5px;color:var(--text-muted);margin:0 0 16px}
+  .highlight{background:var(--green-glow);border:1px solid var(--green-dim);border-radius:var(--radius-lg);padding:22px 24px;margin:26px 0}
+  .highlight .big{font-family:var(--mono);font-size:30px;font-weight:800;color:var(--green);letter-spacing:-1px}
+  .highlight p{margin:6px 0 0;color:var(--text-muted);font-size:14.5px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="in">
+    <a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a>
+    <nav id="nav">
+      <a href="index.html#servicos">Serviços</a>
+      <a href="index.html#planos">Planos</a>
+      <a href="cases.html" class="active">Cases</a>
+      <a href="artigos.html">Artigos</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="seguranca.html">Segurança</a>
+    </nav>
+    <div style="display:flex;gap:12px;align-items:center">
+      <a href="index.html#diagnostico" class="btn">Falar com um especialista</a>
+      <button class="navtoggle" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="breadcrumb"><a href="index.html">Início</a> / <a href="cases.html">Cases</a> / CNPI</div></div>
+
+<div class="head">
+  <div class="wrap">
+    <span class="tag">Migração · Cloud · FinOps · Segurança</span>
+    <h1>Do servidor local à Oracle Cloud: conta menor, segurança do zero e ~99,9% de uptime</h1>
+    <p class="lead" style="margin-top:16px;max-width:760px">A jornada da CNPI com a InfraCtrl: sair de um servidor local que travava e caía, ganhar estabilidade na nuvem, migrar para a Oracle Cloud com um trabalho de FinOps que reduziu a conta, e refazer a segurança do zero.</p>
+    <div class="facts">
+      <div><span>Cliente</span>CNPI</div>
+      <div><span>Setor</span>Centro de pesquisa</div>
+      <div><span>Serviços</span>Migração, Cloud, FinOps, Segurança, DBA</div>
+      <div><span>Duração</span>Jornada em fases · operação contínua</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="layout">
+    <article>
+      <h2><span class="lbl">O desafio</span><br>Um servidor local que travava, caía e custava caro</h2>
+      <p class="muted" style="color:var(--text)">A CNPI dependia de um único servidor local que já não dava conta: <strong>gargalos de processamento e de armazenamento</strong>, além de um <strong>link de internet que caía com frequência</strong>. Era caro de manter e instável: a pior combinação. Sem observabilidade e sem uma postura de segurança estruturada, cada problema virava uma surpresa.</p>
+
+      <div class="beforeafter">
+        <div class="ba b"><h4>Ponto de partida</h4><ul><li>Servidor local sobrecarregado (CPU e armazenamento)</li><li>Link de internet caindo com frequência</li><li>Custo alto de hardware, com muita indisponibilidade</li><li>Sem monitoramento e sem plano de segurança</li></ul></div>
+        <div class="ba a"><h4>Onde chegamos</h4><ul><li>Operação na Oracle Cloud, estável e monitorada</li><li>Conta reduzida com FinOps (R$19.400 → R$17.000)</li><li>Segurança refeita do zero e backups testados</li><li>~99,9% de uptime hoje</li></ul></div>
+      </div>
+
+      <h2><span class="lbl">A jornada</span><br>Estabilizar primeiro, otimizar depois</h2>
+
+      <div style="margin:26px 0">
+        <div class="tl">
+          <div class="when">01 · Saída do servidor local</div>
+          <h4>Para a Magalu Cloud, com observabilidade e ajuste de banco</h4>
+          <p>Tiramos a CNPI do servidor local e levamos para a <strong>Magalu Cloud</strong>, resolvendo de uma vez os gargalos de processamento, armazenamento e a instabilidade do link, e já <strong>economizando</strong>, porque os servidores locais custavam caro e ainda por cima caíam muito. Colocamos <strong>Zabbix</strong> e <strong>Uptime Kuma</strong> para enxergar o ambiente e usamos o <strong>WhatsDBA</strong> para ajudar os desenvolvedores a otimizar as consultas que travavam o banco. O uptime subiu para 99%.</p>
+        </div>
+        <div class="tl">
+          <div class="when">02 · Migração para a Oracle Cloud + FinOps</div>
+          <h4>A conta caiu de R$19.400 para R$17.000</h4>
+          <p>Na sequência, migramos a operação para a <strong>Oracle Cloud</strong> e aplicamos um trabalho de <strong>FinOps</strong>: dimensionamento correto dos recursos, eliminação de desperdício e uso inteligente do modelo de cobrança. O resultado foi uma <strong>redução recorrente da conta mensal, de R$19.400 para R$17.000</strong>, sem perder desempenho.</p>
+        </div>
+        <div class="tl">
+          <div class="when">03 · Segurança do zero e backups testados</div>
+          <h4>Uma base de segurança construída de novo</h4>
+          <p>Com o ambiente na Oracle Cloud, <strong>refizemos a segurança do zero</strong> e passamos a <strong>testar os backups</strong> de verdade, para que a recuperação deixasse de ser uma promessa e virasse rotina comprovada. A estabilidade acumulada levou o uptime para <strong>perto de 99,9%</strong>.</p>
+        </div>
+      </div>
+
+      <div class="highlight">
+        <div class="big">R$ 19.400 &nbsp;→&nbsp; R$ 17.000 / mês</div>
+        <p>Redução recorrente de aproximadamente <strong>R$ 2.400 por mês (~12%)</strong> na conta de nuvem, com o trabalho de FinOps na migração para a Oracle Cloud.</p>
+      </div>
+
+      <h2><span class="lbl">O resultado</span><br>Estável, seguro e mais barato</h2>
+      <div class="resultgrid">
+        <div class="cell"><div class="n">~99,9%</div><div class="l">de uptime hoje</div><div class="was">antes: servidor local caindo e link instável</div></div>
+        <div class="cell"><div class="n">-R$ 2,4 mil</div><div class="l">na conta mensal (FinOps)</div><div class="was">de R$19.400 para R$17.000/mês</div></div>
+        <div class="cell"><div class="n">Do zero</div><div class="l">segurança refeita + backups testados</div><div class="was">antes: sem postura de segurança</div></div>
+        <div class="cell"><div class="n">Observável</div><div class="l">Zabbix + Uptime Kuma + WhatsDBA</div><div class="was">antes: sem visibilidade nenhuma</div></div>
+      </div>
+
+      <h2><span class="lbl">O impacto</span><br>Orçamento e atenção de volta para a pesquisa</h2>
+      <p class="muted" style="color:var(--text)">Como centro de pesquisa, o orçamento do CNPI compete com prioridades científicas, não com conta de nuvem. A redução recorrente de ~R$2.400/mês na Oracle Cloud libera verba para o que realmente importa para a instituição. A segurança refeita do zero e os backups testados também tiram um risco real da mesa: dados de pesquisa perdidos ou expostos. Com o ambiente monitorado e estável, ninguém no time precisa mais parar o que está fazendo para investigar uma instabilidade.</p>
+
+    </article>
+
+    <aside>
+      <div class="box"><h5>Serviços aplicados</h5><ul><li>Migração para cloud</li><li>FinOps / otimização de custo</li><li>Segurança (reconstrução completa)</li><li>Backups testados</li><li>Monitoramento e observabilidade</li><li>Otimização de banco (WhatsDBA)</li></ul></div>
+      <div class="box"><h5>Stack</h5><ul><li>Oracle Cloud (OCI)</li><li>Magalu Cloud (etapa anterior)</li><li>Zabbix · Uptime Kuma</li><li>WhatsDBA</li></ul></div>
+      <div class="box cta"><h5 style="color:var(--green-soft)">Pagando caro por uma nuvem instável?</h5><p>Peça uma avaliação gratuita. Avaliamos custo, estabilidade e segurança da sua operação, sem compromisso.</p><a href="index.html#diagnostico" class="btn block">Avaliar minha infraestrutura</a></div>
+    </aside>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div><a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a><p class="about">Infraestrutura gerenciada para empresas de tecnologia. Monitoramento, cloud, segurança e bancos de dados — 100% remoto, todo o Brasil.</p></div>
+      <div><h5>Empresa</h5><ul><li><a href="sobre.html">Sobre</a></li><li><a href="cases.html">Cases de sucesso</a></li><li><a href="artigos.html">Artigos</a></li><li><a href="seguranca.html">Segurança &amp; Compliance</a></li></ul></div>
+      <div><h5>Serviços</h5><ul><li><a href="index.html#servicos">Infraestrutura Gerenciada</a></li><li><a href="index.html#servicos">Monitoramento 24/7</a></li><li><a href="index.html#servicos">Bancos de Dados</a></li><li><a href="index.html#servicos">Segurança</a></li><li><a href="index.html#planos">Planos</a></li></ul></div>
+      <div><h5>Contato</h5><ul><li><a href="index.html#diagnostico">Falar com um especialista</a></li><li><a href="https://whatsdba.infractrl.com.br">WhatsDBA ↗</a></li></ul></div>
+    </div>
+    <div class="bottom"><span>© 2026 InfraCtrl · Infraestrutura gerenciada para empresas de tecnologia</span><span><a href="cases.html" style="color:var(--text-muted)">← Todos os cases</a></span></div>
+  </div>
+</footer>
+
+</body>
+</html>

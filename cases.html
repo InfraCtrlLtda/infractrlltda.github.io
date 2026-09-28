@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<!-- Números e depoimentos são ILUSTRATIVOS. Substitua pelos dados reais antes de publicar. -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cases de Sucesso — InfraCtrl</title>
+<meta name="description" content="Resultados reais de gestão de infraestrutura e banco de dados: menos downtime, mais segurança e SLA cumprido. Veja os cases da InfraCtrl.">
+<link rel="canonical" href="https://infractrl.com.br/cases.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cases de Sucesso — InfraCtrl">
+<meta property="og:description" content="Resultados reais de gestão de infraestrutura e banco de dados para empresas de tecnologia.">
+<meta property="og:url" content="https://infractrl.com.br/cases.html">
+<meta property="og:image" content="https://infractrl.com.br/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  .cases{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+  @media(max-width:860px){.cases{grid-template-columns:1fr}}
+  .case{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:.25s;display:flex;flex-direction:column}
+  .case:hover{border-color:var(--green-dim);transform:translateY(-3px);box-shadow:0 14px 44px -20px rgba(27,143,78,.16)}
+  .case .top{padding:26px 26px 0}
+  .case h3{font-size:22px;margin:16px 0 6px}
+  .case .client{font-size:13px;color:var(--text-dim);font-family:var(--mono);margin-bottom:14px}
+  .case .desc{font-size:14.5px;color:var(--text-muted);min-height:66px}
+  .case .metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);margin-top:22px;border-top:1px solid var(--border)}
+  .case .metrics div{background:var(--bg-card);padding:16px 10px;text-align:center}
+  .case .metrics .mn{font-family:var(--mono);font-size:20px;font-weight:800;color:var(--green)}
+  .case .metrics .ml{font-size:10.5px;color:var(--text-dim);margin-top:3px;line-height:1.3}
+  .case .foot{padding:16px 26px;border-top:1px solid var(--border);font-size:13.5px;color:var(--green-soft);font-weight:600;display:flex;justify-content:space-between;align-items:center}
+  .case:hover .foot .arrow{transform:translateX(4px)}
+  .case .foot .arrow{transition:.2s}
+  .filters{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:0 0 34px}
+  .chip{font-size:13.5px;padding:8px 16px;border-radius:30px;border:1px solid var(--border-hi);color:var(--text-muted);cursor:pointer;transition:.2s;font-family:var(--mono);letter-spacing:.3px}
+  .chip:hover{color:var(--green);border-color:var(--green-dim)}
+  .chip.active{background:var(--green);color:#16201a;border-color:var(--green);font-weight:600}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="in">
+    <a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a>
+    <nav id="nav">
+      <a href="index.html#servicos">Serviços</a>
+      <a href="index.html#planos">Planos</a>
+      <a href="cases.html" class="active">Cases</a>
+      <a href="artigos.html">Artigos</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="seguranca.html">Segurança</a>
+    </nav>
+    <div style="display:flex;gap:12px;align-items:center">
+      <a href="index.html#diagnostico" class="btn">Falar com um especialista</a>
+      <button class="navtoggle" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="hero" style="padding:80px 0 44px">
+  <div class="gridbg"></div>
+  <div class="wrap in">
+    <span class="eyebrow center">Cases de Sucesso</span>
+    <h1 style="margin:16px auto 14px;max-width:820px">Resultado é o que fica<br><span class="grad">quando a infra para de doer.</span></h1>
+    <p class="lead" style="max-width:640px;margin:0 auto">Empresas de tecnologia que terceirizaram a operação de infraestrutura e banco de dados com a InfraCtrl, e o que mudou em uptime, segurança e tranquilidade.</p>
+    <div class="statband" style="margin-top:48px">
+      <div class="stat"><div class="n">99,9%</div><div class="l">uptime médio entregue</div></div>
+      <div class="stat"><div class="n">&lt;1h</div><div class="l">resposta a incidentes</div></div>
+      <div class="stat"><div class="n">-72%</div><div class="l">redução média de downtime</div></div>
+      <div class="stat"><div class="n">4+</div><div class="l">operações sob gestão</div></div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="filters">
+      <span class="chip active">Todos</span>
+      <span class="chip">Monitoramento 24/7</span>
+      <span class="chip">Banco de dados</span>
+      <span class="chip">Segurança</span>
+      <span class="chip">Cloud &amp; Migração</span>
+    </div>
+
+    <div class="cases">
+      <a href="case-modernizacao.html" class="case">
+        <div class="top">
+          <span class="tag">Migração · Cloud · Banco de dados</span>
+          <h3>De servidores locais que caíam à nuvem gerenciada</h3>
+          <div class="client">Modernização Informática · Software para gestão pública</div>
+          <p class="desc">Sistemas de uma prefeitura rodavam em servidores locais instáveis. Migramos para a IBM Cloud com DR, levamos o SQL Server para Linux/OpenShift reduzindo custo e hoje mantemos a operação monitorada, com time atuando todos os dias.</p>
+        </div>
+        <div class="metrics">
+          <div><div class="mn">~99%</div><div class="ml">de uptime hoje</div></div>
+          <div><div class="mn">DR</div><div class="ml">recuperação de desastre ativa</div></div>
+          <div><div class="mn">Win→Linux</div><div class="ml">custo de licença reduzido</div></div>
+        </div>
+        <div class="foot"><span>Ler o estudo de caso completo</span><span class="arrow">→</span></div>
+      </a>
+
+      <a href="case-devlith.html" class="case">
+        <div class="top">
+          <span class="tag">Infraestrutura · Segurança · CI/CD</span>
+          <h3>Da DigitalOcean à Oracle Cloud, com deploys sem downtime</h3>
+          <div class="client">Devlith · Gestão educacional</div>
+          <p class="desc">A InfraCtrl assumiu toda a infra e a segurança da Devlith: revisão de segurança, migração para a Oracle Cloud, deploys sem downtime e escala sob demanda: os devs voltaram 100% ao produto.</p>
+        </div>
+        <div class="metrics">
+          <div><div class="mn">0</div><div class="ml">downtime nos deploys</div></div>
+          <div><div class="mn">DO→OCI</div><div class="ml">nuvem mais robusta</div></div>
+          <div><div class="mn">Sob demanda</div><div class="ml">escala com Zabbix</div></div>
+        </div>
+        <div class="foot"><span>Ler o estudo de caso completo</span><span class="arrow">→</span></div>
+      </a>
+
+      <a href="case-cnpi.html" class="case">
+        <div class="top">
+          <span class="tag">Migração · Cloud · FinOps</span>
+          <h3>Do servidor local à Oracle Cloud, com conta menor</h3>
+          <div class="client">CNPI · Centro de pesquisa</div>
+          <p class="desc">Servidor local travando e caindo. Migramos para a nuvem, depois para a Oracle Cloud com FinOps (conta de R$19.400 → R$17.000), refizemos a segurança do zero e chegamos perto de 99,9% de uptime.</p>
+        </div>
+        <div class="metrics">
+          <div><div class="mn">~99,9%</div><div class="ml">de uptime hoje</div></div>
+          <div><div class="mn">-R$2,4k</div><div class="ml">na conta mensal</div></div>
+          <div><div class="mn">Do zero</div><div class="ml">segurança refeita</div></div>
+        </div>
+        <div class="foot"><span>Ler o estudo de caso completo</span><span class="arrow">→</span></div>
+      </a>
+
+      <a href="case-didatica.html" class="case">
+        <div class="top">
+          <span class="tag">Migração · Cloud · Observabilidade</span>
+          <h3>De descobrir pelo alarme a enxergar o problema antes</h3>
+          <div class="client">Didática Digital · Software educacional/saúde</div>
+          <p class="desc">Saímos do servidor local para a IBM Cloud com Hyper-V, reduzimos as quedas, otimizamos banco e Tomcats junto ao time, colocamos VPN e backup no S3, e hoje Zabbix e Uptime Kuma avisam antes do alarme.</p>
+        </div>
+        <div class="metrics">
+          <div><div class="mn">Local→IBM Cloud</div><div class="ml">menos quedas</div></div>
+          <div><div class="mn">Proativo</div><div class="ml">Zabbix + Uptime Kuma</div></div>
+          <div><div class="mn">S3 + VPN</div><div class="ml">backup e acesso seguro</div></div>
+        </div>
+        <div class="foot"><span>Ler o estudo de caso completo</span><span class="arrow">→</span></div>
+      </a>
+    </div>
+
+    <div class="ctaband" style="margin-top:56px">
+      <h2>Seu próximo case pode ser o seu.</h2>
+      <p>Peça uma avaliação gratuita de infraestrutura. Em 24h você recebe um retrato honesto dos riscos da sua operação, sem compromisso.</p>
+      <a href="index.html#diagnostico" class="btn lg">Avaliar minha infraestrutura</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a>
+        <p class="about">Infraestrutura gerenciada para empresas de tecnologia. Monitoramento, cloud, segurança e bancos de dados — 100% remoto, todo o Brasil.</p>
+      </div>
+      <div><h5>Empresa</h5><ul><li><a href="sobre.html">Sobre</a></li><li><a href="cases.html">Cases de sucesso</a></li><li><a href="artigos.html">Artigos</a></li><li><a href="seguranca.html">Segurança &amp; Compliance</a></li></ul></div>
+      <div><h5>Serviços</h5><ul><li><a href="index.html#servicos">Infraestrutura Gerenciada</a></li><li><a href="index.html#servicos">Monitoramento 24/7</a></li><li><a href="index.html#servicos">Bancos de Dados</a></li><li><a href="index.html#servicos">Segurança</a></li><li><a href="index.html#planos">Planos</a></li></ul></div>
+      <div><h5>Contato</h5><ul><li><a href="index.html#diagnostico">Falar com um especialista</a></li><li><a href="https://whatsdba.infractrl.com.br">WhatsDBA ↗</a></li></ul></div>
+    </div>
+    <div class="bottom"><span>© 2026 InfraCtrl · Infraestrutura gerenciada para empresas de tecnologia</span><span>100% remoto · Todo o Brasil</span></div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');}));
+</script>
+</body>
+</html>

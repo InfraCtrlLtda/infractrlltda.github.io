@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<!-- Caso real Didática Digital. Sem depoimento do cliente ainda: bloco de citação removido até haver um real. -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Didática Digital: de reativo a proativo | InfraCtrl</title>
+<meta name="description" content="Como a InfraCtrl levou a Didática Digital de servidor local e postura reativa para IBM Cloud, backups no S3 e monitoramento proativo.">
+<link rel="canonical" href="https://infractrl.com.br/case-didatica.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Estudo de caso: Didática Digital — do servidor local à IBM Cloud, do reativo ao proativo">
+<meta property="og:description" content="Migração para a IBM Cloud, menos quedas, banco e Tomcats otimizados, VPN e backup no S3 e observabilidade proativa.">
+<meta property="og:url" content="https://infractrl.com.br/case-didatica.html">
+<meta property="og:image" content="https://infractrl.com.br/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Estudo de caso: Didática Digital — do servidor local à IBM Cloud, do reativo ao proativo","author":{"@type":"Organization","name":"InfraCtrl"},"publisher":{"@type":"Organization","name":"InfraCtrl","logo":{"@type":"ImageObject","url":"https://infractrl.com.br/og-image.png"}},"datePublished":"2026-08-18","mainEntityOfPage":"https://infractrl.com.br/case-didatica.html","about":"Migração de infraestrutura, banco de dados, backups e observabilidade"}
+</script>
+<style>
+  .head{padding:22px 0 44px;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+  .head::before{content:"";position:absolute;inset:0;background:radial-gradient(620px 260px at 12% -30%,var(--green-glow),transparent 70%);pointer-events:none}
+  .head h1{max-width:860px;margin-top:18px}
+  .facts{display:flex;flex-wrap:wrap;gap:12px 34px;margin-top:26px;font-size:14px;position:relative}
+  .facts div span{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:2px}
+  .layout{display:grid;grid-template-columns:1fr 300px;gap:48px;padding:48px 0}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+  article h2{margin:38px 0 6px;font-size:26px}
+  article h2:first-child{margin-top:0}
+  article .lbl{font-family:var(--mono);font-size:12px;color:var(--green);letter-spacing:1px;text-transform:uppercase}
+  .beforeafter{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+  @media(max-width:620px){.beforeafter{grid-template-columns:1fr}}
+  .ba{border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+  .ba.b{border-left:3px solid var(--red)}.ba.a{border-left:3px solid var(--green)}
+  .ba h4{font-size:13px;text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);margin-bottom:10px}
+  .ba.b h4{color:#cf4437}.ba.a h4{color:var(--green-soft)}
+  .ba ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--text-muted)}.ba li{margin:7px 0}
+  .resultgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin:24px 0}
+  @media(max-width:620px){.resultgrid{grid-template-columns:1fr}}
+  .resultgrid .cell{background:var(--bg-card);padding:26px 22px}
+  .resultgrid .n{font-family:var(--mono);font-size:24px;font-weight:800;color:var(--green);letter-spacing:-1px;line-height:1.15}
+  .resultgrid .l{font-size:14px;color:var(--text-muted);margin-top:6px}
+  .resultgrid .was{font-size:12px;color:var(--text-dim);margin-top:8px;font-family:var(--mono)}
+  .tl{position:relative;padding:0 0 24px 26px;border-left:2px solid var(--border);margin-left:6px}
+  .tl::before{content:"";position:absolute;left:-8px;top:3px;width:13px;height:13px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px var(--bg)}
+  .tl:last-child{border-left-color:transparent}
+  .tl .when{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--green)}
+  .tl h4{margin:2px 0 5px;font-size:17px}.tl p{margin:0;font-size:14.5px;color:var(--text-muted)}
+  aside{position:sticky;top:92px;align-self:start}
+  .box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-bottom:18px}
+  .box h5{font-family:var(--mono);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px}
+  .box ul{list-style:none;padding:0;margin:0}
+  .box li{padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;display:flex;align-items:center;gap:9px}
+  .box li:last-child{border-bottom:none}.box li::before{content:"▸";color:var(--green)}
+  .box.cta{background:var(--panel);border-color:var(--green-dim)}
+  .box.cta p{font-size:14.5px;color:var(--text-muted);margin:0 0 16px}
+  .highlight{background:var(--green-glow);border:1px solid var(--green-dim);border-radius:var(--radius-lg);padding:22px 24px;margin:26px 0}
+  .highlight .big{font-family:var(--font);font-size:22px;font-weight:800;color:#16201a;letter-spacing:-.3px}
+  .highlight p{margin:6px 0 0;color:var(--text-muted);font-size:14.5px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="in">
+    <a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a>
+    <nav id="nav">
+      <a href="index.html#servicos">Serviços</a>
+      <a href="index.html#planos">Planos</a>
+      <a href="cases.html" class="active">Cases</a>
+      <a href="artigos.html">Artigos</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="seguranca.html">Segurança</a>
+    </nav>
+    <div style="display:flex;gap:12px;align-items:center">
+      <a href="index.html#diagnostico" class="btn">Falar com um especialista</a>
+      <button class="navtoggle" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="breadcrumb"><a href="index.html">Início</a> / <a href="cases.html">Cases</a> / Didática Digital</div></div>
+
+<div class="head">
+  <div class="wrap">
+    <span class="tag">Migração · Cloud · Banco de dados · Observabilidade</span>
+    <h1>De "descobrir pelo alarme" a enxergar o problema antes de ele acontecer</h1>
+    <p class="lead" style="margin-top:16px;max-width:770px">A jornada da Didática Digital com a InfraCtrl: sair do servidor local para a IBM Cloud, reduzir as quedas, otimizar banco e Tomcats junto ao time e trocar a operação reativa por observabilidade que avisa antes.</p>
+    <div class="facts">
+      <div><span>Cliente</span>Didática Digital</div>
+      <div><span>Setor</span>Software educacional e saúde</div>
+      <div><span>Serviços</span>Migração, Cloud, DBA, Backups, Observabilidade</div>
+      <div><span>Duração</span>Operação contínua e gerenciada</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="layout">
+    <article>
+      <h2><span class="lbl">O desafio</span><br>Uma operação que só reagia depois do alarme</h2>
+      <p class="muted" style="color:var(--text)">Na Didática Digital, a infraestrutura toda era cuidada pelos próprios desenvolvedores, e o modelo era puramente reativo: <strong>só se descobria um problema quando um alarme disparava</strong>, ou seja, quando já era tarde. Somavam-se a isso um servidor local sujeito a quedas e um banco de dados com queries lentas e travamentos que ninguém tinha tempo de investigar a fundo.</p>
+
+      <div class="beforeafter">
+        <div class="ba b"><h4>Ponto de partida</h4><ul><li>Infra cuidada pelos próprios desenvolvedores</li><li>Modelo reativo: só se sabia pelo alarme</li><li>Servidor local com quedas</li><li>Queries lentas e travamentos no banco</li><li>Backups e acesso sem padrão definido</li></ul></div>
+        <div class="ba a"><h4>Onde chegamos</h4><ul><li>Operação na IBM Cloud, com menos quedas</li><li>Observabilidade proativa (Zabbix + Uptime Kuma)</li><li>Banco e Tomcats otimizados com o time</li><li>VPN e backups indo direto para o S3</li><li>Devs livres da gestão de infra</li></ul></div>
+      </div>
+
+      <div class="highlight">
+        <div class="big">Antes, o time só sabia de um problema quando o alarme disparava. Hoje, a gente vê chegando.</div>
+        <p>Com Zabbix e Uptime Kuma, os sinais aparecem antes de virarem incidente, e dá tempo de agir.</p>
+      </div>
+
+      <h2><span class="lbl">A solução</span><br>O que a InfraCtrl fez</h2>
+
+      <div style="margin:26px 0">
+        <div class="tl">
+          <div class="when">01 · Saída do servidor local</div>
+          <h4>Para a IBM Cloud, com Hyper-V</h4>
+          <p>Tiramos a operação do servidor local e migramos para a <strong>IBM Cloud</strong>, usando <strong>Hyper-V</strong> como virtualizador. Só essa mudança já <strong>reduziu as quedas dos sistemas</strong>.</p>
+        </div>
+        <div class="tl">
+          <div class="when">02 · Banco de dados afinado</div>
+          <h4>Trabalho lado a lado com os DBAs</h4>
+          <p>Trabalhamos em conjunto com os DBAs para <strong>identificar as queries mais lentas, os travamentos e afins</strong>, atacando na raiz o que deixava o sistema pesado e instável.</p>
+        </div>
+        <div class="tl">
+          <div class="when">03 · Tuning de aplicação e servidores</div>
+          <h4>Time no suporte otimizando Tomcats e servidores</h4>
+          <p>Colocamos o time no suporte para <strong>otimizar os Tomcats e os servidores</strong>, ajustando a operação para ganhar estabilidade e desempenho no dia a dia.</p>
+        </div>
+        <div class="tl">
+          <div class="when">04 · Segurança de acesso e backups</div>
+          <h4>VPN e backup indo direto para o S3</h4>
+          <p>Implantamos <strong>VPN</strong> para acesso seguro ao ambiente e passamos a <strong>enviar os backups direto para o S3</strong>, com armazenamento confiável e fora do servidor de produção.</p>
+        </div>
+        <div class="tl">
+          <div class="when">05 · Do reativo ao proativo</div>
+          <h4>Observabilidade com Zabbix e Uptime Kuma</h4>
+          <p>Trocamos o "só descobrir pelo alarme" por <strong>Zabbix e Uptime Kuma</strong>, que permitem identificar os problemas <strong>antes</strong>, quando ainda são um sinal, e não uma queda.</p>
+        </div>
+      </div>
+
+      <h2><span class="lbl">O resultado</span><br>Menos quedas, mais visibilidade, devs no produto</h2>
+      <div class="resultgrid">
+        <div class="cell"><div class="n">Local → IBM Cloud</div><div class="l">menos quedas de sistema</div><div class="was">antes: servidor local instável</div></div>
+        <div class="cell"><div class="n">Reativo → proativo</div><div class="l">Zabbix + Uptime Kuma avisam antes</div><div class="was">antes: só se sabia pelo alarme</div></div>
+        <div class="cell"><div class="n">Backup no S3 + VPN</div><div class="l">recuperação confiável e acesso seguro</div><div class="was">antes: sem padrão definido</div></div>
+        <div class="cell"><div class="n">Banco afinado</div><div class="l">queries e travamentos atacados com os DBAs</div><div class="was">antes: lentidão sem investigação</div></div>
+      </div>
+
+      <h2><span class="lbl">O impacto</span><br>De apagar incêndio a prevenir o próximo</h2>
+      <p class="muted" style="color:var(--text)">A Didática Digital atende educação e saúde — setores em que uma queda ou lentidão não é só um incômodo técnico, é serviço interrompido para quem depende dele. Passar de reativo para proativo com Zabbix e Uptime Kuma significa que problemas são pegos antes de virar incidente visível para o usuário final. Com backup padronizado, acesso via VPN e o banco afinado por DBAs, o time da Didática Digital não precisa mais investigar lentidão no escuro — a operação virou rotina acompanhada, não surpresa.</p>
+
+    </article>
+
+    <aside>
+      <div class="box"><h5>Serviços aplicados</h5><ul><li>Migração para cloud (IBM Cloud)</li><li>Gestão de infraestrutura</li><li>Otimização de banco (com os DBAs)</li><li>Tuning de Tomcat e servidores</li><li>VPN e backups (S3)</li><li>Observabilidade e monitoramento</li></ul></div>
+      <div class="box"><h5>Stack</h5><ul><li>IBM Cloud · Hyper-V</li><li>Zabbix · Uptime Kuma</li><li>Amazon S3 (backups)</li><li>VPN</li><li>Tomcat</li></ul></div>
+      <div class="box cta"><h5 style="color:var(--green-soft)">Sua operação só reage depois do alarme?</h5><p>Peça uma avaliação gratuita. Colocamos visibilidade antes do incidente na sua infraestrutura, sem compromisso.</p><a href="index.html#diagnostico" class="btn block">Avaliar minha infraestrutura</a></div>
+    </aside>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div><a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a><p class="about">Infraestrutura gerenciada para empresas de tecnologia. Monitoramento, cloud, segurança e bancos de dados — 100% remoto, todo o Brasil.</p></div>
+      <div><h5>Empresa</h5><ul><li><a href="sobre.html">Sobre</a></li><li><a href="cases.html">Cases de sucesso</a></li><li><a href="artigos.html">Artigos</a></li><li><a href="seguranca.html">Segurança &amp; Compliance</a></li></ul></div>
+      <div><h5>Serviços</h5><ul><li><a href="index.html#servicos">Infraestrutura Gerenciada</a></li><li><a href="index.html#servicos">Monitoramento 24/7</a></li><li><a href="index.html#servicos">Bancos de Dados</a></li><li><a href="index.html#servicos">Segurança</a></li><li><a href="index.html#planos">Planos</a></li></ul></div>
+      <div><h5>Contato</h5><ul><li><a href="index.html#diagnostico">Falar com um especialista</a></li><li><a href="https://whatsdba.infractrl.com.br">WhatsDBA ↗</a></li></ul></div>
+    </div>
+    <div class="bottom"><span>© 2026 InfraCtrl · Infraestrutura gerenciada para empresas de tecnologia</span><span><a href="cases.html" style="color:var(--text-muted)">← Todos os cases</a></span></div>
+  </div>
+</footer>
+
+</body>
+</html>

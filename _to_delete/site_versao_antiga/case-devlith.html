@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<!-- MODELO — números e depoimento ILUSTRATIVOS. Substitua pelos reais e valide o depoimento com o cliente antes de publicar. Reutilize esta estrutura para cada novo caso. -->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estudo de caso: Devlith — de apagões a 99,9% de uptime | InfraCtrl</title>
+<meta name="description" content="Como a InfraCtrl eliminou 94% do downtime da Devlith em 90 dias com monitoramento 24/7, segurança endurecida e observabilidade de banco via WhatsDBA.">
+<link rel="canonical" href="https://infractrl.com.br/case-devlith.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Estudo de caso: Devlith — de apagões a 99,9% de uptime">
+<meta property="og:description" content="Monitoramento 24/7, segurança e DBA gerenciado: o antes e depois da operação da Devlith.">
+<meta property="og:url" content="https://infractrl.com.br/case-devlith.html">
+<meta property="og:image" content="https://infractrl.com.br/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Estudo de caso: Devlith — de apagões a 99,9% de uptime","author":{"@type":"Organization","name":"InfraCtrl"},"publisher":{"@type":"Organization","name":"InfraCtrl","logo":{"@type":"ImageObject","url":"https://infractrl.com.br/og-image.png"}},"datePublished":"2026-08-18","about":"Gestão de infraestrutura de TI e banco de dados"}
+</script>
+<style>
+  .head{padding:22px 0 44px;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+  .head::before{content:"";position:absolute;inset:0;background:radial-gradient(620px 260px at 12% -30%,var(--green-glow),transparent 70%);pointer-events:none}
+  .head h1{max-width:820px;margin-top:18px}
+  .facts{display:flex;flex-wrap:wrap;gap:12px 34px;margin-top:26px;font-size:14px;position:relative}
+  .facts div span{display:block;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:2px}
+  .layout{display:grid;grid-template-columns:1fr 300px;gap:48px;padding:48px 0}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+  article h2{margin:38px 0 6px;font-size:26px}
+  article h2:first-child{margin-top:0}
+  article .lbl{font-family:var(--mono);font-size:12px;color:var(--green);letter-spacing:1px;text-transform:uppercase}
+  .beforeafter{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+  @media(max-width:620px){.beforeafter{grid-template-columns:1fr}}
+  .ba{border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+  .ba.b{border-left:3px solid var(--red)}.ba.a{border-left:3px solid var(--green)}
+  .ba h4{font-size:13px;text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);margin-bottom:10px}
+  .ba.b h4{color:#ff8a82}.ba.a h4{color:var(--green-soft)}
+  .ba ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--text-muted)}.ba li{margin:7px 0}
+  .resultgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin:24px 0}
+  @media(max-width:620px){.resultgrid{grid-template-columns:1fr}}
+  .resultgrid .cell{background:var(--bg-card);padding:26px 22px}
+  .resultgrid .n{font-family:var(--mono);font-size:34px;font-weight:800;color:var(--green);letter-spacing:-1px}
+  .resultgrid .l{font-size:14px;color:var(--text-muted);margin-top:4px}
+  .resultgrid .was{font-size:12px;color:var(--text-dim);margin-top:8px;font-family:var(--mono)}
+  .tl{position:relative;padding:0 0 22px 26px;border-left:2px solid var(--border);margin-left:6px}
+  .tl::before{content:"";position:absolute;left:-8px;top:3px;width:13px;height:13px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px var(--bg)}
+  .tl .when{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--green)}
+  .tl h4{margin:2px 0 3px;font-size:16px}.tl p{margin:0;font-size:14.5px;color:var(--text-muted)}
+  aside{position:sticky;top:92px;align-self:start}
+  .box{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-bottom:18px}
+  .box h5{font-family:var(--mono);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px}
+  .box ul{list-style:none;padding:0;margin:0}
+  .box li{padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;display:flex;align-items:center;gap:9px}
+  .box li:last-child{border-bottom:none}.box li::before{content:"▸";color:var(--green)}
+  .box.cta{background:linear-gradient(140deg,#10231a,#0d0d0d);border-color:var(--green-dim)}
+  .box.cta p{font-size:14.5px;color:var(--text-muted);margin:0 0 16px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="in">
+    <a href="index.html" class="logo"><span class="i">infra</span><span class="c">ctrl</span><span class="s">✦</span></a>
+    <nav id="nav">
+      <a href="index.html#servicos">Serviços</a>
+      <a href="index.html#planos">Planos</a>
+      <a href="cases.html" class="active">Cases</a>
+      <a href="artigos.html">Artigos</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="seguranca.html">Segurança</a>
+    </nav>
+    <div style="display:flex;gap:12px;align-items:center">
+      <a href="index.html#diagnostico" class="btn">Diagnóstico gratuito</a>
+      <button class="navtoggle" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="breadcrumb"><a href="index.html">Início</a> / <a href="cases.html">Cases</a> / Devlith</div></div>
+
+<div class="head">
+  <div class="wrap">
+    <span class="tag">Monitoramento 24/7 · Banco de dados · Segurança</span>
+    <h1>De apagões em horário de aula a 99,9% de uptime em 90 dias</h1>
+    <p class="lead" style="margin-top:16px;max-width:720px">Como a InfraCtrl assumiu a operação de infraestrutura da Devlith, endureceu a segurança e passou a enxergar o banco de dados em tempo real com o WhatsDBA.</p>
+    <div class="facts">
+      <div><span>Cliente</span>Devlith</div>
+      <div><span>Setor</span>Gestão educacional (SaaS)</div>
+      <div><span>Serviços</span>Monitoramento, DBA, Segurança</div>
+      <div><span>Duração</span>Contínuo · resultados em 90 dias</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="layout">
+    <article>
+      <h2><span class="lbl">O desafio</span><br>Uma operação que caía na pior hora possível</h2>
+      <p class="muted" style="color:var(--text)">A Devlith entrega software de gestão para instituições de ensino — e o pico de uso acontece exatamente quando não pode falhar: no horário de aula. Antes da InfraCtrl, a empresa convivia com três problemas que se realimentavam:</p>
+      <ul class="prose">
+        <li><strong>Quedas recorrentes de servidor</strong> em horário crítico, sem ninguém monitorando fora do expediente.</li>
+        <li><strong>Backups que nunca haviam sido testados</strong> — existiam no papel, mas ninguém sabia se uma restauração funcionaria.</li>
+        <li><strong>Banco de dados como caixa-preta:</strong> bloqueios e queries lentas só eram descobertos depois que o cliente já tinha reclamado.</li>
+      </ul>
+      <p class="muted" style="color:var(--text)">O custo real não era só técnico. Cada apagão significava suporte sobrecarregado, confiança do cliente arranhada e o time de produto desviado para apagar incêndio em vez de construir.</p>
+
+      <div class="beforeafter">
+        <div class="ba b"><h4>Antes</h4><ul><li>Downtime frequente em horário de pico</li><li>Zero monitoramento fora do expediente</li><li>Backups não testados</li><li>Incidentes de banco descobertos tarde</li><li>Founder envolvido em cada crise</li></ul></div>
+        <div class="ba a"><h4>Depois</h4><ul><li>99,9% de uptime sustentado</li><li>Monitoramento 24/7 com alerta &lt;8min</li><li>Backups testados e recuperáveis</li><li>Bloqueios alertados em &lt;60s via WhatsDBA</li><li>Time de produto de volta ao produto</li></ul></div>
+      </div>
+
+      <h2><span class="lbl">O diagnóstico</span><br>Começamos medindo, não trocando</h2>
+      <p class="muted" style="color:var(--text)">Em vez de sair reinstalando servidores, a InfraCtrl começou pelo diagnóstico gratuito: um retrato honesto do ambiente. Instrumentamos a infraestrutura e o banco por duas semanas para entender <strong>onde o tempo era realmente perdido</strong>. O diagnóstico revelou que a maioria das quedas vinha de contenção no banco de dados — não de falta de hardware — e que os backups tinham uma falha silenciosa de configuração.</p>
+
+      <h2><span class="lbl">A solução</span><br>Operação assumida de ponta a ponta</h2>
+      <p class="muted" style="color:var(--text)">Com o quadro claro, colocamos a operação sob gestão contínua, em três frentes:</p>
+      <ul class="prose">
+        <li><strong>Monitoramento 24/7</strong> com alertas em tempo real e SLA de resposta em menos de 1 hora, incluindo fins de semana.</li>
+        <li><strong>Segurança endurecida:</strong> firewall reconfigurado, rotina de backups imutáveis e testados, e um runbook de resposta a incidentes documentado.</li>
+        <li><strong>Observabilidade de banco com o WhatsDBA:</strong> o próprio SaaS da InfraCtrl passou a vigiar o SQL Server, entregando alerta de bloqueio em menos de 60 segundos no WhatsApp — onde o time já trabalha — com o SPID, a query e o contexto do problema.</li>
+      </ul>
+      <p class="muted" style="color:var(--text)">Tudo versionado com infraestrutura como código (Ansible, Terraform, Docker), para que cada mudança fosse auditável e reproduzível — não um ajuste manual que ninguém lembra depois.</p>
+
+      <div style="margin:22px 0">
+        <div class="tl"><div class="when">Semana 1–2</div><h4>Diagnóstico e instrumentação</h4><p>Mapa completo do ambiente e da origem real das quedas.</p></div>
+        <div class="tl"><div class="when">Semana 3–4</div><h4>Monitoramento 24/7 no ar</h4><p>Alertas em tempo real e SLA de resposta ativos.</p></div>
+        <div class="tl"><div class="when">Semana 5–8</div><h4>Segurança e backups</h4><p>Firewall, backups imutáveis testados e runbook de incidentes.</p></div>
+        <div class="tl"><div class="when">Semana 9–12</div><h4>WhatsDBA em produção</h4><p>Observabilidade de banco em tempo real via WhatsApp.</p></div>
+      </div>
+
+      <h2><span class="lbl">O resultado</span><br>Números em 90 dias</h2>
+      <div class="resultgrid">
+        <div class="cell"><div class="n">-94%</div><div class="l">de downtime</div><div class="was">antes: ~9h indisponível/mês</div></div>
+        <div class="cell"><div class="n">99,9%</div><div class="l">uptime sustentado</div><div class="was">antes: ~97,5%</div></div>
+        <div class="cell"><div class="n">8 min</div><div class="l">para detectar incidentes</div><div class="was">antes: horas (ou o cliente avisava)</div></div>
+        <div class="cell"><div class="n">&lt;60s</div><div class="l">alerta de bloqueio no banco</div><div class="was">antes: sem visibilidade</div></div>
+      </div>
+
+      <div class="quote" style="margin:34px 0">
+        "Antes, a gente descobria que o sistema tinha caído pelo WhatsApp dos clientes. Hoje é a InfraCtrl que me avisa antes — e na maioria das vezes já resolveu. Meu time voltou a trabalhar no produto."
+        <span class="who">— [Nome do responsável], [cargo] · Devlith</span>
+      </div>
+      <p class="note">Nota interna: substituir números, nome e cargo pelos dados reais e obter autorização do cliente antes de publicar.</p>
+    </article>
+
+    <aside>
+      <div class="box"><h5>Serviços aplicados</h5><ul><li>Monitoramento 24/7</li><li>Gestão de servidores</li><li>Segurança &amp; firewall</li><li>Backups imutáveis</li><li>DBA gerenciado (WhatsDBA)</li><li>Infra como código</li></ul></div>
+      <div class="box"><h5>Stack</h5><ul><li>SQL Server</li><li>Linux / VPS</li><li>Ansible · Terraform</li><li>Docker</li><li>WhatsDBA</li></ul></div>
+      <div class="box cta"><h5 style="color:var(--green-soft)">Sua operação também não pode parar?</h5><p>Peça um diagnóstico gratuito. Em 24h você recebe o retrato dos riscos da sua infraestrutura.</p><a href="index.html#diagnostico" class="btn block">Diagnóstico gratuito</a></div>
+    </aside>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div><a href="index.html" class="logo"><span class="i">infra</span><span class="c">ctrl</span><span class="s">✦</span></a><p class="about">Gestão de infraestrutura de TI e banco de dados 100% remota para empresas de tecnologia. Todo o Brasil.</p></div>
+      <div><h5>Empresa</h5><ul><li><a href="sobre.html">Sobre</a></li><li><a href="cases.html">Cases de sucesso</a></li><li><a href="artigos.html">Artigos</a></li><li><a href="seguranca.html">Segurança &amp; Compliance</a></li></ul></div>
+      <div><h5>Serviços</h5><ul><li><a href="index.html#servicos">Monitoramento 24/7</a></li><li><a href="index.html#servicos">DBA gerenciado</a></li><li><a href="index.html#servicos">Segurança</a></li><li><a href="index.html#planos">Planos</a></li></ul></div>
+      <div><h5>Contato</h5><ul><li><a href="index.html#diagnostico">Diagnóstico gratuito</a></li><li><a href="https://whatsdba.infractrl.com.br">WhatsDBA ↗</a></li><li><a href="mailto:contato@infractrl.com.br">contato@infractrl.com.br</a></li></ul></div>
+    </div>
+    <div class="bottom"><span>© 2026 InfraCtrl · Gestão de infraestrutura de TI e banco de dados</span><span><a href="cases.html" style="color:var(--text-muted)">← Todos os cases</a></span></div>
+  </div>
+</footer>
+
+</body>
+</html>

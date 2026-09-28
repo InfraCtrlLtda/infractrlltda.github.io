@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firewall mal configurado: os erros mais comuns que abrem porta pra ransomware | InfraCtrl</title>
+<meta name="description" content="Os erros de configuração de firewall que mais aparecem em incidentes de ransomware: RDP exposto, regra liberada demais, zero segmentação. Um checklist prático.">
+<link rel="canonical" href="https://infractrl.com.br/artigo-firewall-ransomware.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Firewall mal configurado: os erros mais comuns que abrem porta pra ransomware">
+<meta property="og:description" content="RDP exposto, regra liberada demais, zero segmentação: os erros de firewall que mais aparecem em incidentes de ransomware, e um checklist pra auditar o seu.">
+<meta property="og:url" content="https://infractrl.com.br/artigo-firewall-ransomware.html">
+<meta property="og:image" content="https://infractrl.com.br/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Firewall mal configurado: os erros mais comuns que abrem porta pra ransomware","author":{"@type":"Organization","name":"InfraCtrl"},"publisher":{"@type":"Organization","name":"InfraCtrl","logo":{"@type":"ImageObject","url":"https://infractrl.com.br/og-image.png"}},"datePublished":"2026-09-24","mainEntityOfPage":"https://infractrl.com.br/artigo-firewall-ransomware.html","description":"Os erros de configuração de firewall que mais aparecem em incidentes de ransomware, e um checklist prático para auditar o seu."}
+</script>
+<style>
+  .arthead{padding:26px 0 34px;border-bottom:1px solid var(--border)}
+  .artmeta{font-family:var(--mono);font-size:12px;color:var(--text-dim);display:flex;gap:16px;margin-top:18px;flex-wrap:wrap}
+  .inlinecta{background:var(--panel);border:1px solid var(--green-dim);border-radius:var(--radius-lg);padding:26px 28px;margin:34px 0}
+  .inlinecta h4{color:#16201a;font-size:18px;margin-bottom:8px}
+  .inlinecta p{color:var(--text-muted);font-size:15px;margin:0 0 16px}
+  .checklist{list-style:none;padding:0;margin:22px 0;display:flex;flex-direction:column;gap:10px}
+  .checklist li{display:flex;gap:12px;align-items:flex-start;font-size:15.5px;color:var(--text);background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+  .checklist li::before{content:"";flex:0 0 auto;width:18px;height:18px;margin-top:2px;border-radius:5px;border:1.5px solid var(--green-dim);background:var(--green-glow)}
+  .refbox{border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;margin:30px 0;background:var(--bg-card2)}
+  .refbox h5{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-dim);margin-bottom:10px}
+  .refbox p{font-size:14.5px;color:var(--text-muted);margin:0}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="in">
+    <a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a>
+    <nav id="nav">
+      <a href="index.html#servicos">Serviços</a>
+      <a href="index.html#planos">Planos</a>
+      <a href="cases.html">Cases</a>
+      <a href="artigos.html" class="active">Artigos</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="seguranca.html">Segurança</a>
+    </nav>
+    <div style="display:flex;gap:12px;align-items:center">
+      <a href="index.html#diagnostico" class="btn">Falar com um especialista</a>
+      <button class="navtoggle" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="breadcrumb"><a href="index.html">Início</a> / <a href="artigos.html">Artigos</a> / Firewall e ransomware</div></div>
+
+<div class="narrow">
+  <div class="arthead">
+    <span class="tag">Segurança</span>
+    <h1 style="margin-top:16px;font-size:38px">Firewall mal configurado: os erros mais comuns que abrem porta pra ransomware</h1>
+    <div class="artmeta"><span>InfraCtrl</span><span>·</span><span>Leitura: 7 min</span><span>·</span><span>Segurança</span></div>
+  </div>
+
+  <article class="prose" style="padding:36px 0 20px">
+    <p>Ransomware quase nunca "invade" nada no sentido de filme de hacker. Na grande maioria dos casos que a gente vê — e no que se repete incidente após incidente relatado publicamente — o caminho de entrada é muito mais simples: uma porta que alguém abriu um dia, para resolver um problema pontual, e nunca mais fechou.</p>
+    <p>Ter um firewall instalado não significa estar protegido. O que protege é o <strong>conjunto de regras</strong> dele — e é ali, na revisão dessas regras, que mora a maior parte do risco real. Este artigo cobre os erros de configuração mais comuns que a gente encontra em avaliações de ambiente, e o que fazer com cada um.</p>
+
+    <h2>RDP exposto direto na internet</h2>
+    <p>É o clássico. Alguém precisou acessar um servidor Windows remotamente, liberou a porta <code>3389</code> direto do roteador ou firewall pra internet, resolveu o problema do dia e seguiu em frente. Meses depois, aquela regra continua lá — e hoje existem ferramentas de varredura automatizada rodando o tempo todo na internet só pra achar exatamente esse tipo de porta aberta, testando senha fraca ou explorando vulnerabilidade conhecida do protocolo.</p>
+    <p>RDP não deveria estar acessível diretamente da internet em nenhuma hipótese. Se existe necessidade real de acesso remoto, o caminho é VPN com autenticação em duas etapas, e o RDP liberado só de dentro dessa rede privada — nunca do "any" externo.</p>
+
+    <h2>Regra "liberar tudo" que ninguém tira depois</h2>
+    <p>Durante um teste, uma migração ou um chifre de emergência, é comum alguém liberar uma regra ampla — tipo "qualquer origem, qualquer porta" — só pra destravar o que estava bloqueando o trabalho. O problema não é liberar: é <strong>esquecer de reverter</strong>. Regra de exceção sem data de expiração vira regra permanente, e ninguém audita o que já está "funcionando".</p>
+    <p>O mesmo vale, com um agravante, pro tráfego de <strong>saída</strong>. Firewall costuma ser configurado pra controlar quem entra, mas raramente controla quem sai — e é exatamente a saída sem filtro que deixa um ransomware, depois de entrar, baixar o resto do payload de um servidor externo ou exfiltrar dados antes de criptografar tudo. Egress filtering (bloquear por padrão o tráfego de saída e liberar só o necessário) é uma das medidas mais eficazes e mais ignoradas.</p>
+
+    <div class="inlinecta">
+      <h4>Quando foi a última vez que alguém revisou suas regras de firewall?</h4>
+      <p>Se a resposta for "não sei" ou "quando configuramos", isso já é um risco. A InfraCtrl assume redes e segurança como parte da operação contínua — não como projeto de uma vez só.</p>
+      <a href="index.html#diagnostico" class="btn">Avaliar minha infraestrutura</a>
+    </div>
+
+    <h2>Rede plana: uma porta aberta vira acesso a tudo</h2>
+    <p>Mesmo quando a regra exposta é "só" pra um sistema específico, se a rede não é segmentada, quem entra por ali enxerga o resto do ambiente. Servidor de aplicação, banco de dados, backup e estação de trabalho, tudo na mesma rede plana, sem VLAN e sem regra interna separando um do outro. Um ponto de entrada vira acesso lateral irrestrito — e é exatamente esse movimento lateral que transforma um incidente pequeno em uma criptografia de ambiente inteiro, backups inclusos.</p>
+    <p>Segmentação não precisa ser complexa pra começar a valer: separar servidores de produção da rede de estações de trabalho, e isolar o ambiente de backup de tudo o mais (inclusive com credenciais próprias), já corta boa parte do estrago possível.</p>
+
+    <h2>A interface de gestão do próprio firewall exposta</h2>
+    <p>Existe uma ironia recorrente: o equipamento que deveria proteger a rede tem seu próprio painel de administração acessível da internet, muitas vezes ainda com a senha padrão de fábrica ou uma senha fraca que nunca foi trocada. O mesmo problema aparece em NAS, hypervisor e outros painéis de gestão. Interface de administração — de qualquer equipamento — não tem motivo pra estar acessível fora da rede interna ou de uma VPN.</p>
+
+    <h2>Regras acumuladas que ninguém mais sabe pra que servem</h2>
+    <p>Firewall que roda anos sem revisão vira um arquivo arqueológico: dezenas de regras, metade delas de sistemas que já saíram do ar, e ninguém no time atual sabe explicar por que aquela porta específica está liberada. Regra que ninguém entende é regra que ninguém tira — por medo de quebrar algo — e é exatamente esse acúmulo que aumenta a superfície de ataque sem necessidade nenhuma.</p>
+
+    <h2>Checklist rápido para auditar o seu</h2>
+    <ul class="checklist">
+      <li>RDP, SSH e outros acessos de administração não estão expostos direto na internet — só via VPN</li>
+      <li>Existe filtro de saída (egress), não só de entrada</li>
+      <li>A rede é segmentada: produção, backup e estações de trabalho não dividem o mesmo espaço</li>
+      <li>A interface de gestão do firewall e de outros equipamentos não está acessível externamente</li>
+      <li>Toda regra tem dono e motivo conhecido — nenhuma "porque sempre esteve lá"</li>
+      <li>Existe uma data marcada pra próxima revisão do conjunto de regras</li>
+    </ul>
+
+    <h2>Auditoria de firewall é rotina, não projeto único</h2>
+    <p>O erro mais comum de todos, na verdade, é tratar a configuração do firewall como algo que se resolve uma vez e nunca mais se olha. Ambiente muda, gente muda, sistema novo entra, sistema antigo devia ter saído e ninguém tirou a regra dele. Segurança de rede é operação contínua, não configuração inicial.</p>
+
+    <div class="refbox">
+      <h5>Leitura recomendada</h5>
+      <p><em>Network Security Assessment: Know Your Network</em>, de Chris McNab (O'Reilly) — referência sobre metodologia de avaliação de segurança de rede, reconhecimento e revisão de firewall, para quem quer se aprofundar além deste resumo prático.</p>
+    </div>
+
+    <div class="inlinecta">
+      <h4>Não sabe se sua rede tem alguma dessas brechas?</h4>
+      <p>Peça uma avaliação gratuita. A gente olha suas regras de firewall, sua segmentação e seus acessos remotos de verdade — sem compromisso.</p>
+      <a href="index.html#diagnostico" class="btn">Falar com um especialista</a>
+    </div>
+  </article>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div><a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a><p class="about">Infraestrutura gerenciada para empresas de tecnologia. Monitoramento, cloud, segurança e bancos de dados — 100% remoto, todo o Brasil.</p></div>
+      <div><h5>Empresa</h5><ul><li><a href="sobre.html">Sobre</a></li><li><a href="cases.html">Cases de sucesso</a></li><li><a href="artigos.html">Artigos</a></li><li><a href="seguranca.html">Segurança &amp; Compliance</a></li></ul></div>
+      <div><h5>Serviços</h5><ul><li><a href="index.html#servicos">Infraestrutura Gerenciada</a></li><li><a href="index.html#servicos">Monitoramento 24/7</a></li><li><a href="index.html#servicos">Bancos de Dados</a></li><li><a href="index.html#servicos">Segurança</a></li><li><a href="index.html#planos">Planos</a></li></ul></div>
+      <div><h5>Contato</h5><ul><li><a href="index.html#diagnostico">Falar com um especialista</a></li><li><a href="https://whatsdba.infractrl.com.br">WhatsDBA ↗</a></li></ul></div>
+    </div>
+    <div class="bottom"><span>© 2026 InfraCtrl · Infraestrutura gerenciada para empresas de tecnologia</span><span><a href="artigos.html" style="color:var(--text-muted)">← Todos os artigos</a></span></div>
+  </div>
+</footer>
+</body>
+</html>

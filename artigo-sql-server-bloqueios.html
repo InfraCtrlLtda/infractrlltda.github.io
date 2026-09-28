@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Server travando? Como diagnosticar bloqueios e deadlocks em produção | InfraCtrl</title>
+<meta name="description" content="Guia prático para diagnosticar bloqueios e deadlocks no SQL Server: a diferença entre eles, como achar a query culpada em tempo real e como prevenir. Por quem opera banco em produção.">
+<link rel="canonical" href="https://infractrl.com.br/artigo-sql-server-bloqueios.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server travando? Como diagnosticar bloqueios e deadlocks em produção">
+<meta property="og:description" content="A diferença entre bloqueio e deadlock, como achar a query culpada em tempo real e como prevenir.">
+<meta property="og:url" content="https://infractrl.com.br/artigo-sql-server-bloqueios.html">
+<meta property="og:image" content="https://infractrl.com.br/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"SQL Server travando? Como diagnosticar bloqueios e deadlocks em producao","author":{"@type":"Organization","name":"InfraCtrl"},"publisher":{"@type":"Organization","name":"InfraCtrl","logo":{"@type":"ImageObject","url":"https://infractrl.com.br/og-image.png"}},"datePublished":"2026-08-18","mainEntityOfPage":"https://infractrl.com.br/artigo-sql-server-bloqueios.html","description":"Guia pratico para diagnosticar bloqueios e deadlocks no SQL Server em producao."}
+</script>
+<style>
+  .codeblock{font-family:var(--mono);background:#0f1512;border:1px solid #24312a;border-radius:8px;padding:16px 18px;font-size:13px;color:#8fe3ac;white-space:pre;overflow-x:auto;margin:20px 0;line-height:1.6}
+  .arthead{padding:26px 0 34px;border-bottom:1px solid var(--border)}
+  .artmeta{font-family:var(--mono);font-size:12px;color:var(--text-dim);display:flex;gap:16px;margin-top:18px;flex-wrap:wrap}
+  .inlinecta{background:var(--panel);border:1px solid var(--green-dim);border-radius:var(--radius-lg);padding:26px 28px;margin:34px 0}
+  .inlinecta h4{color:#16201a;font-size:18px;margin-bottom:8px}
+  .inlinecta p{color:var(--text-muted);font-size:15px;margin:0 0 16px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="in">
+    <a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a>
+    <nav id="nav">
+      <a href="index.html#servicos">Serviços</a>
+      <a href="index.html#planos">Planos</a>
+      <a href="cases.html">Cases</a>
+      <a href="artigos.html" class="active">Artigos</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="seguranca.html">Segurança</a>
+    </nav>
+    <div style="display:flex;gap:12px;align-items:center">
+      <a href="index.html#diagnostico" class="btn">Falar com um especialista</a>
+      <button class="navtoggle" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')">&#9776;</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="breadcrumb"><a href="index.html">Início</a> / <a href="artigos.html">Artigos</a> / SQL Server: bloqueios e deadlocks</div></div>
+
+<div class="narrow">
+  <div class="arthead">
+    <span class="tag">Banco de dados</span>
+    <h1 style="margin-top:16px;font-size:38px">SQL Server travando? Como diagnosticar bloqueios e deadlocks em produ&ccedil;&atilde;o</h1>
+    <div class="artmeta"><span>InfraCtrl</span><span>&middot;</span><span>Leitura: 8 min</span><span>&middot;</span><span>Banco de dados</span></div>
+  </div>
+
+  <article class="prose" style="padding:36px 0 20px">
+    <p>Existe um momento espec&iacute;fico que todo mundo que opera SQL Server em produ&ccedil;&atilde;o conhece: o sistema fica lento sem motivo aparente, as reclama&ccedil;&otilde;es come&ccedil;am a chegar, e ningu&eacute;m sabe dizer <em>o que</em> est&aacute; segurando o banco. Na maioria das vezes, o culpado n&atilde;o &eacute; falta de hardware &mdash; &eacute; <strong>conten&ccedil;&atilde;o</strong>. Algu&eacute;m est&aacute; esperando por um recurso que outra transa&ccedil;&atilde;o n&atilde;o soltou.</p>
+    <p>Este guia &eacute; para voc&ecirc; achar o culpado r&aacute;pido, entender o que est&aacute; acontecendo e agir antes que o cliente perceba. Vamos direto ao que importa.</p>
+
+    <h2>Bloqueio e deadlock n&atilde;o s&atilde;o a mesma coisa</h2>
+    <p>A confus&atilde;o mais comum come&ccedil;a aqui, e ela muda completamente a forma de agir.</p>
+    <p>Um <strong>bloqueio (blocking)</strong> &eacute; normal e tempor&aacute;rio: uma transa&ccedil;&atilde;o segura um lock sobre uma linha ou tabela, e outra precisa esperar at&eacute; ele ser liberado. Isso acontece o tempo todo em qualquer banco transacional. Vira problema quando a espera &eacute; <em>longa</em> &mdash; uma transa&ccedil;&atilde;o demorada (ou esquecida aberta) segura o recurso e forma uma fila de sess&otilde;es paradas atr&aacute;s dela.</p>
+    <p>Um <strong>deadlock</strong> &eacute; diferente e mais grave: duas transa&ccedil;&otilde;es seguram, cada uma, um recurso que a outra precisa, e nenhuma consegue avan&ccedil;ar. &Eacute; um impasse circular. O SQL Server detecta isso automaticamente e <strong>mata uma das transa&ccedil;&otilde;es</strong> (a "v&iacute;tima") para desfazer o n&oacute; &mdash; voc&ecirc; v&ecirc; o erro <code>1205</code>. Ou seja: bloqueio &eacute; <em>espera</em>; deadlock &eacute; <em>impasse que o servidor resolve na marra</em>.</p>
+
+    <h2>Achando o bloqueio em tempo real</h2>
+    <p>Quando o banco est&aacute; lento agora, voc&ecirc; quer saber quem est&aacute; esperando por quem. A forma r&aacute;pida &eacute; olhar as sess&otilde;es ativas e a cadeia de bloqueio:</p>
+    <div class="codeblock">SELECT
+    r.session_id,
+    r.status,
+    r.blocking_session_id,   -- quem esta me segurando
+    r.wait_type,
+    r.wait_time,
+    r.command,
+    t.text AS query_texto
+FROM sys.dm_exec_requests AS r
+CROSS APPLY sys.dm_exec_sql_text(r.sql_handle) AS t
+WHERE r.blocking_session_id &lt;&gt; 0;</div>
+    <p>A coluna <code>blocking_session_id</code> &eacute; o ouro aqui: ela diz qual sess&atilde;o est&aacute; segurando o recurso. Se v&aacute;rias sess&otilde;es apontam para o mesmo <code>session_id</code>, voc&ecirc; achou a <strong>cabe&ccedil;a da fila</strong> &mdash; a transa&ccedil;&atilde;o que precisa ser investigada (e, se necess&aacute;rio, encerrada).</p>
+    <p>Para ver o texto e o plano da sess&atilde;o bloqueadora, cruze o <code>session_id</code> dela com <code>sys.dm_exec_connections</code> e <code>sys.dm_exec_sql_text</code>. Muitas vezes o vil&atilde;o &eacute; uma transa&ccedil;&atilde;o aberta e esquecida (status <code>sleeping</code> com <code>open_transaction_count &gt; 0</code>) &mdash; um <code>BEGIN TRAN</code> sem <code>COMMIT</code>, geralmente vindo da aplica&ccedil;&atilde;o.</p>
+
+    <div class="inlinecta">
+      <h4>Achar depois do estrago n&atilde;o resolve</h4>
+      <p>Rodar essa query manualmente s&oacute; funciona se voc&ecirc; estiver olhando na hora exata. O <strong>WhatsDBA</strong> vigia isso 24/7 e te avisa no WhatsApp em menos de 60 segundos quando um bloqueio passa do limite &mdash; com o SPID, a query e o contexto j&aacute; prontos.</p>
+      <a href="https://whatsdba.infractrl.com.br" class="btn">Conhecer o WhatsDBA &#8599;</a>
+    </div>
+
+    <h2>Capturando deadlocks (que j&aacute; passaram)</h2>
+    <p>Deadlock &eacute; trai&ccedil;oeiro porque some sozinho: o servidor mata a v&iacute;tima e a vida segue &mdash; at&eacute; a aplica&ccedil;&atilde;o come&ccedil;ar a retornar erro <code>1205</code> para o usu&aacute;rio. Como o evento &eacute; instant&acirc;neo, voc&ecirc; precisa de captura passiva.</p>
+    <p>A boa not&iacute;cia: desde o SQL Server 2012, existe uma sess&atilde;o de <strong>Extended Events</strong> padr&atilde;o chamada <code>system_health</code> que j&aacute; grava o grafo de todos os deadlocks &mdash; sem voc&ecirc; configurar nada. Para list&aacute;-los:</p>
+    <div class="codeblock">SELECT
+    xed.value('@timestamp','datetime2') AS quando,
+    xed.query('.') AS deadlock_graph
+FROM (
+    SELECT CAST(target_data AS XML) AS tdx
+    FROM sys.dm_xe_session_targets st
+    JOIN sys.dm_xe_sessions s ON s.address = st.event_session_address
+    WHERE s.name = 'system_health'
+      AND st.target_name = 'ring_buffer'
+) AS src
+CROSS APPLY tdx.nodes('//RingBufferTarget/event[@name="xml_deadlock_report"]') AS q(xed);</div>
+    <p>O <em>deadlock graph</em> mostra as duas transa&ccedil;&otilde;es, os recursos que cada uma segurava e qual foi escolhida como v&iacute;tima. &Eacute; a partir dele que voc&ecirc; entende o padr&atilde;o &mdash; e quase sempre o padr&atilde;o se repete.</p>
+
+    <h2>As causas mais comuns (e o que fazer)</h2>
+    <p>Depois de diagnosticar centenas desses casos, a maioria cai em poucos padr&otilde;es:</p>
+    <ul>
+      <li><strong>Transa&ccedil;&otilde;es longas demais.</strong> Quanto mais tempo uma transa&ccedil;&atilde;o fica aberta, mais tempo ela segura locks. Mantenha transa&ccedil;&otilde;es curtas e nunca deixe intera&ccedil;&atilde;o de usu&aacute;rio no meio de uma.</li>
+      <li><strong>&Iacute;ndices faltando.</strong> Sem &iacute;ndice, o SQL Server varre a tabela inteira e bloqueia muito mais linhas do que precisaria. Um &iacute;ndice bem posicionado costuma eliminar o bloqueio na raiz.</li>
+      <li><strong>Ordem de acesso inconsistente.</strong> Deadlocks cl&aacute;ssicos nascem quando duas rotinas acessam as mesmas tabelas em ordens diferentes. Padronize a ordem de acesso.</li>
+      <li><strong>N&iacute;vel de isolamento inadequado.</strong> Em muitos cen&aacute;rios de leitura, ativar <code>READ COMMITTED SNAPSHOT</code> reduz drasticamente a conten&ccedil;&atilde;o entre leitores e escritores &mdash; mas avalie o impacto no <em>tempdb</em> antes.</li>
+    </ul>
+    <p>Como &uacute;ltimo recurso, no meio de um incidente, voc&ecirc; pode encerrar a sess&atilde;o bloqueadora com <code>KILL &lt;session_id&gt;</code>. &Eacute; um estancamento, n&atilde;o uma cura: se o padr&atilde;o volta amanh&atilde;, o problema est&aacute; no c&oacute;digo ou no &iacute;ndice, n&atilde;o na sess&atilde;o.</p>
+
+    <h2>O que separa quem apaga inc&ecirc;ndio de quem previne</h2>
+    <p>A diferen&ccedil;a entre uma opera&ccedil;&atilde;o madura e uma reativa n&atilde;o &eacute; saber rodar essas queries &mdash; &eacute; <strong>n&atilde;o precisar estar olhando</strong> para saber que algo travou. Quem previne tem observabilidade cont&iacute;nua, alerta que chega antes do cliente reclamar, e um hist&oacute;rico que mostra se o problema est&aacute; melhorando ou piorando ao longo do tempo.</p>
+    <p>&Eacute; exatamente para fechar essa lacuna que criamos o WhatsDBA e que a InfraCtrl opera banco de dados como servi&ccedil;o: transformar o "descobrimos pelo cliente" em "fomos avisados e j&aacute; resolvemos".</p>
+
+    <div class="inlinecta">
+      <h4>Seu banco de dados &eacute; uma caixa-preta?</h4>
+      <p>Fa&ccedil;a uma avalia&ccedil;&atilde;o gratuita. A gente olha sua opera&ccedil;&atilde;o de verdade e mostra onde est&atilde;o os riscos &mdash; sem compromisso.</p>
+      <a href="index.html#diagnostico" class="btn">Falar com um especialista</a>
+    </div>
+  </article>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div><a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a><p class="about">Infraestrutura gerenciada para empresas de tecnologia. Monitoramento, cloud, seguran&ccedil;a e bancos de dados &mdash; 100% remoto, todo o Brasil.</p></div>
+      <div><h5>Empresa</h5><ul><li><a href="sobre.html">Sobre</a></li><li><a href="cases.html">Cases de sucesso</a></li><li><a href="artigos.html">Artigos</a></li><li><a href="seguranca.html">Seguran&ccedil;a &amp; Compliance</a></li></ul></div>
+      <div><h5>Servi&ccedil;os</h5><ul><li><a href="index.html#servicos">Infraestrutura Gerenciada</a></li><li><a href="index.html#servicos">Monitoramento 24/7</a></li><li><a href="index.html#servicos">Bancos de Dados</a></li><li><a href="index.html#servicos">Seguran&ccedil;a</a></li><li><a href="index.html#planos">Planos</a></li></ul></div>
+      <div><h5>Contato</h5><ul><li><a href="index.html#diagnostico">Falar com um especialista</a></li><li><a href="https://whatsdba.infractrl.com.br">WhatsDBA &#8599;</a></li></ul></div>
+    </div>
+    <div class="bottom"><span>&copy; 2026 InfraCtrl &middot; Infraestrutura gerenciada para empresas de tecnologia</span><span><a href="artigos.html" style="color:var(--text-muted)">&larr; Todos os artigos</a></span></div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artigos — InfraCtrl | Infraestrutura, banco de dados e operação crítica</title>
+<meta name="description" content="Artigos práticos sobre infraestrutura, banco de dados, segurança e operação 24/7 para empresas de tecnologia. Decisões difíceis, explicadas por quem opera.">
+<link rel="canonical" href="https://infractrl.com.br/artigos.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Artigos — InfraCtrl">
+<meta property="og:description" content="Infraestrutura, banco de dados e operação crítica, explicados por quem opera.">
+<meta property="og:url" content="https://infractrl.com.br/artigos.html">
+<meta property="og:image" content="https://infractrl.com.br/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  .feat{display:grid;grid-template-columns:1.1fr .9fr;gap:0;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:.25s}
+  .feat:hover{border-color:var(--green-dim)}
+  @media(max-width:760px){.feat{grid-template-columns:1fr}}
+  .feat .art{padding:38px}
+  .feat .vis{background:var(--panel);position:relative;min-height:240px;display:flex;align-items:center;justify-content:center}
+  .feat .vis::before{content:"";position:absolute;inset:0;background:radial-gradient(300px 200px at 60% 40%,var(--green-glow),transparent 70%)}
+  .feat .vis .big{font-family:var(--mono);font-size:64px;color:var(--green);opacity:.5;position:relative}
+  .list{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}
+  @media(max-width:760px){.list{grid-template-columns:1fr}}
+  .post{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;transition:.25s;display:block}
+  .post.live:hover{border-color:var(--green-dim);transform:translateY(-3px)}
+  .post.soon{opacity:.6}
+  .post .meta{font-family:var(--mono);font-size:11px;letter-spacing:.5px;color:var(--text-dim);margin-bottom:10px;display:flex;justify-content:space-between}
+  .post h3{font-size:18px;margin-bottom:8px;line-height:1.3}
+  .post p{font-size:14px;color:var(--text-muted);margin:0}
+  .soonlbl{color:var(--amber)}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="in">
+    <a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a>
+    <nav id="nav">
+      <a href="index.html#servicos">Serviços</a>
+      <a href="index.html#planos">Planos</a>
+      <a href="cases.html">Cases</a>
+      <a href="artigos.html" class="active">Artigos</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="seguranca.html">Segurança</a>
+    </nav>
+    <div style="display:flex;gap:12px;align-items:center">
+      <a href="index.html#diagnostico" class="btn">Falar com um especialista</a>
+      <button class="navtoggle" aria-label="Menu" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="hero" style="padding:80px 0 40px">
+  <div class="gridbg"></div>
+  <div class="wrap in">
+    <span class="eyebrow center">Artigos</span>
+    <h1 style="margin:16px auto 14px;max-width:780px">As decisões difíceis de infra,<br><span class="grad">explicadas por quem opera.</span></h1>
+    <p class="lead" style="max-width:600px;margin:0 auto">Sem jargão vazio e sem "o que é um servidor". Conteúdo prático sobre o que realmente tira o sono de quem cuida de operação crítica.</p>
+  </div>
+</div>
+
+<section style="padding-top:44px">
+  <div class="wrap">
+    <a href="artigo-sql-server-bloqueios.html" class="feat">
+      <div class="art">
+        <span class="tag">Banco de dados · Destaque</span>
+        <h2 style="margin:16px 0 12px;font-size:28px">SQL Server travando? Como diagnosticar bloqueios e deadlocks em produção</h2>
+        <p class="muted">O guia prático para achar a query que está segurando o banco, entender a diferença entre bloqueio e deadlock, e agir antes que o cliente perceba.</p>
+        <div style="margin-top:22px;color:var(--green-soft);font-weight:600">Ler artigo →</div>
+      </div>
+      <div class="vis"><span class="big">{ }</span></div>
+    </a>
+
+    <div class="list">
+      <div class="post soon">
+        <div class="meta"><span>Negócio</span><span class="soonlbl">Em breve</span></div>
+        <h3>Seu desenvolvedor não deveria ser seu administrador de servidores</h3>
+        <p>O custo invisível de tirar seu time de produto pra apagar incêndio de infraestrutura.</p>
+      </div>
+      <div class="post soon">
+        <div class="meta"><span>Infraestrutura Gerenciada</span><span class="soonlbl">Em breve</span></div>
+        <h3>Sinais de que sua empresa já devia terceirizar a infraestrutura</h3>
+        <p>Não é sobre tamanho de time — é sobre o quanto sua operação já ficou crítica.</p>
+      </div>
+      <div class="post soon">
+        <div class="meta"><span>Monitoramento</span><span class="soonlbl">Em breve</span></div>
+        <h3>Monitoramento de verdade x monitoramento de fachada</h3>
+        <p>Como saber se alguém está realmente olhando sua infra fora do horário comercial.</p>
+      </div>
+      <div class="post soon">
+        <div class="meta"><span>Cloud</span><span class="soonlbl">Em breve</span></div>
+        <h3>Migrar para cloud sem virar refém dela</h3>
+        <p>O checklist prático antes de assinar contrato com qualquer provedor.</p>
+      </div>
+      <div class="post soon">
+        <div class="meta"><span>Backup</span><span class="soonlbl">Em breve</span></div>
+        <h3>Backup que ninguém testa é ilusão: como validar recuperação de verdade</h3>
+        <p>Por que existir backup não é o mesmo que ter recuperação, e o teste que muda isso.</p>
+      </div>
+      <a href="artigo-firewall-ransomware.html" class="post live">
+        <div class="meta"><span>Segurança</span><span>Leitura: 7 min</span></div>
+        <h3>Firewall mal configurado: os erros mais comuns que abrem porta pra ransomware</h3>
+        <p>RDP exposto, regra liberada demais, zero segmentação — e um checklist pra auditar o seu.</p>
+      </a>
+      <div class="post soon">
+        <div class="meta"><span>Compliance</span><span class="soonlbl">Em breve</span></div>
+        <h3>LGPD para quem opera infraestrutura: o que realmente muda no dia a dia</h3>
+        <p>Sem juridiquês: as decisões práticas de quem lida com dados sensíveis todo dia.</p>
+      </div>
+      <div class="post soon">
+        <div class="meta"><span>Automação</span><span class="soonlbl">Em breve</span></div>
+        <h3>Infraestrutura como código na prática: Terraform + Ansible sem susto</h3>
+        <p>Como versionar sua infra para que nenhuma mudança dependa da memória de alguém.</p>
+      </div>
+      <div class="post soon">
+        <div class="meta"><span>Banco de Dados</span><span class="soonlbl">Em breve</span></div>
+        <h3>MySQL em produção: 7 métricas que você deveria estar monitorando</h3>
+        <p>As métricas que separam quem descobre o problema antes de quem descobre pelo cliente.</p>
+      </div>
+      <div class="post soon">
+        <div class="meta"><span>Diferencial</span><span class="soonlbl">Em breve</span></div>
+        <h3>Um servidor pode estar de pé e seu banco ainda com problema</h3>
+        <p>Por que observabilidade de banco é uma camada separada — e como fechamos esse ponto cego.</p>
+      </div>
+      <div class="post soon">
+        <div class="meta"><span>Negócio</span><span class="soonlbl">Em breve</span></div>
+        <h3>Quanto custa 1 hora de servidor parado para uma empresa de tecnologia</h3>
+        <p>Uma conta honesta do custo de downtime, e por que ele é maior do que parece.</p>
+      </div>
+    </div>
+
+    <p class="note center" style="margin-top:30px">Calendário editorial sugerido: 1 artigo por semana. Publique os 12 títulos do relatório estratégico para construir autoridade e SEO de forma consistente.</p>
+  </div>
+</section>
+
+<section style="padding-top:10px">
+  <div class="wrap">
+    <div class="ctaband">
+      <h2>Prefere resolver em vez de ler?</h2>
+      <p>Se o assunto é dor real na sua operação, pule o artigo e peça uma avaliação gratuita. A gente olha o seu ambiente de verdade.</p>
+      <a href="index.html#diagnostico" class="btn lg">Avaliar minha infraestrutura</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div><a href="index.html" class="logo"><img src="static/infractrl.png" alt="InfraCtrl"></a><p class="about">Infraestrutura gerenciada para empresas de tecnologia. Monitoramento, cloud, segurança e bancos de dados — 100% remoto, todo o Brasil.</p></div>
+      <div><h5>Empresa</h5><ul><li><a href="sobre.html">Sobre</a></li><li><a href="cases.html">Cases de sucesso</a></li><li><a href="artigos.html">Artigos</a></li><li><a href="seguranca.html">Segurança &amp; Compliance</a></li></ul></div>
+      <div><h5>Serviços</h5><ul><li><a href="index.html#servicos">Infraestrutura Gerenciada</a></li><li><a href="index.html#servicos">Monitoramento 24/7</a></li><li><a href="index.html#servicos">Bancos de Dados</a></li><li><a href="index.html#servicos">Segurança</a></li><li><a href="index.html#planos">Planos</a></li></ul></div>
+      <div><h5>Contato</h5><ul><li><a href="index.html#diagnostico">Falar com um especialista</a></li><li><a href="https://whatsdba.infractrl.com.br">WhatsDBA ↗</a></li></ul></div>
+    </div>
+    <div class="bottom"><span>© 2026 InfraCtrl · Infraestrutura gerenciada para empresas de tecnologia</span><span>100% remoto · Todo o Brasil</span></div>
+  </div>
+</footer>
+</body>
+</html>
